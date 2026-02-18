@@ -1,6 +1,6 @@
 # 🎓 Smart Study Monitor
 
-**Smart Study Monitor** is a Python-based AI study assistant developed as a university project to explore concepts in Machine Learning, Computer Vision, and modular software design.
+**Smart Study Monitor** is a Python-based AI using ML framework such as Open CV ,study assistant developed as a university project to explore concepts in Machine Learning, Computer Vision, and modular software design.
 The system helps students track study sessions, analyze learning difficulty from notes, and simulate focus monitoring using OpenCV.
 
 ---

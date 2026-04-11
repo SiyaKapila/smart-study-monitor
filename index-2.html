@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartStudy Monitor</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #0a0a12;
+      color: #e8e8f0;
+      line-height: 1.7;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 6%;
+      border-bottom: 1px solid #ffffff10;
+      position: sticky;
+      top: 0;
+      background: #0a0a12ee;
+      backdrop-filter: blur(8px);
+      z-index: 100;
+    }
+    .logo { font-size: 1.1rem; font-weight: 700; color: #a78bfa; letter-spacing: 0.5px; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: #b0b0c8; text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover { color: #a78bfa; }
+
+    .hero {
+      text-align: center;
+      padding: 7rem 6% 5rem;
+      max-width: 820px;
+      margin: 0 auto;
+    }
+    .badge {
+      display: inline-block;
+      background: #a78bfa18;
+      color: #a78bfa;
+      border: 1px solid #a78bfa40;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      padding: 0.3rem 1rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.5px;
+    }
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+      background: linear-gradient(135deg, #fff 40%, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: #9090b0;
+      max-width: 580px;
+      margin: 0 auto 2.5rem;
+    }
+    .btn-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      padding: 0.75rem 1.8rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary { background: #a78bfa; color: #fff; }
+    .btn-primary:hover { background: #9067f5; transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: #a78bfa; border: 1px solid #a78bfa60; }
+    .btn-outline:hover { background: #a78bfa12; transform: translateY(-1px); }
+
+    section { padding: 5rem 6%; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.78rem; font-weight: 700; color: #a78bfa;
+      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.7rem;
+    }
+    .section-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; color: #e8e8f0; margin-bottom: 0.8rem; }
+    .section-sub { color: #8080a0; max-width: 540px; font-size: 0.98rem; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+      margin-top: 3rem;
+    }
+    .feature-card {
+      background: #13131f;
+      border: 1px solid #ffffff10;
+      border-radius: 12px;
+      padding: 1.6rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .feature-card:hover { border-color: #a78bfa40; transform: translateY(-3px); }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; margin-bottom: 1rem;
+    }
+    .icon-purple { background: #a78bfa18; }
+    .icon-cyan   { background: #67e8f918; }
+    .icon-green  { background: #4ade8018; }
+    .icon-amber  { background: #fbbf2418; }
+    .feature-card h3 { font-size: 1rem; font-weight: 700; color: #e0e0f0; margin-bottom: 0.5rem; }
+    .feature-card p  { font-size: 0.88rem; color: #7070a0; line-height: 1.6; }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .tool-card {
+      background: #13131f;
+      border: 1px solid #ffffff10;
+      border-radius: 14px;
+      padding: 1.8rem;
+    }
+    .tool-card h3 { font-size: 1rem; font-weight: 700; color: #e0e0f0; margin-bottom: 0.4rem; }
+    .tool-card p  { font-size: 0.85rem; color: #6060a0; margin-bottom: 1.2rem; }
+
+    .timer-display {
+      font-size: 3rem; font-weight: 800; color: #a78bfa;
+      text-align: center; letter-spacing: 2px; margin: 1rem 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .timer-status { text-align: center; font-size: 0.82rem; color: #6060a0; margin-bottom: 1rem; }
+    .timer-btns { display: flex; gap: 0.7rem; }
+    .tbtn {
+      flex: 1; padding: 0.65rem; border-radius: 8px;
+      font-size: 0.88rem; font-weight: 600; cursor: pointer;
+      border: none; transition: all 0.2s;
+    }
+    .tbtn-start { background: #a78bfa; color: #fff; }
+    .tbtn-start:hover { background: #9067f5; }
+    .tbtn-end { background: #1e1e2e; color: #a0a0c0; border: 1px solid #ffffff15; }
+    .tbtn-end:hover { background: #2a2a3e; }
+    .session-badge {
+      display: inline-block;
+      background: #4ade8020; color: #4ade80;
+      border: 1px solid #4ade8040; border-radius: 6px;
+      font-size: 0.78rem; padding: 0.25rem 0.7rem; margin-top: 0.8rem;
+    }
+
+    .note-input {
+      width: 100%; background: #0d0d1a;
+      border: 1px solid #ffffff15; border-radius: 8px;
+      padding: 0.8rem 1rem; color: #e0e0f0;
+      font-size: 0.88rem; font-family: inherit;
+      resize: vertical; min-height: 100px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .note-input:focus { border-color: #a78bfa60; }
+    .analyze-btn {
+      width: 100%; margin-top: 0.8rem; padding: 0.65rem;
+      border-radius: 8px; background: #a78bfa; color: #fff;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; border: none; transition: background 0.2s;
+    }
+    .analyze-btn:hover { background: #9067f5; }
+    .result-box {
+      margin-top: 1rem; padding: 0.9rem 1rem;
+      border-radius: 8px; font-size: 0.88rem;
+      font-weight: 600; display: none;
+    }
+    .result-easy    { background: #4ade8018; border: 1px solid #4ade8040; color: #4ade80; }
+    .result-risk    { background: #f8717112; border: 1px solid #f8717140; color: #f87171; }
+    .result-neutral { background: #fbbf2412; border: 1px solid #fbbf2440; color: #fbbf24; }
+
+    .counter-display { text-align: center; padding: 1rem 0; }
+    .counter-num { font-size: 3.5rem; font-weight: 800; color: #a78bfa; display: block; }
+    .counter-label { font-size: 0.82rem; color: #6060a0; margin-top: 0.2rem; }
+    .stats-mini { display: flex; gap: 0.8rem; margin-top: 1rem; }
+    .stat-mini-card {
+      flex: 1; background: #0d0d1a;
+      border: 1px solid #ffffff10; border-radius: 8px;
+      padding: 0.7rem; text-align: center;
+    }
+    .stat-mini-num   { font-size: 1.2rem; font-weight: 700; color: #c4b5fd; }
+    .stat-mini-label { font-size: 0.72rem; color: #5050a0; margin-top: 0.1rem; }
+    .reset-btn {
+      width: 100%; margin-top: 0.8rem; padding: 0.5rem;
+      border-radius: 8px; background: transparent;
+      color: #6060a0; font-size: 0.82rem;
+      cursor: pointer; border: 1px solid #ffffff10; transition: all 0.2s;
+    }
+    .reset-btn:hover { color: #f87171; border-color: #f8717140; }
+
+    .tip-box {
+      background: #0d0d1a; border: 1px solid #a78bfa30;
+      border-radius: 10px; padding: 1.1rem;
+      font-size: 0.88rem; color: #c4b5fd;
+      line-height: 1.6; min-height: 80px;
+      margin-bottom: 1rem; transition: all 0.3s;
+    }
+    .tip-tag {
+      display: inline-block; font-size: 0.72rem;
+      color: #7060a0; margin-bottom: 0.5rem;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .tip-btn {
+      width: 100%; padding: 0.65rem; border-radius: 8px;
+      background: #1e1e2e; color: #a0a0c0;
+      font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; border: 1px solid #ffffff15; transition: all 0.2s;
+    }
+    .tip-btn:hover { background: #2a2a3e; color: #c4b5fd; }
+
+    .steps { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 3rem; }
+    .step {
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      background: #13131f; border: 1px solid #ffffff10;
+      border-radius: 12px; padding: 1.5rem;
+    }
+    .step-num {
+      min-width: 36px; height: 36px; border-radius: 50%;
+      background: #a78bfa20; border: 1px solid #a78bfa50;
+      color: #a78bfa; font-weight: 700; font-size: 0.9rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-content h3 { font-size: 1rem; font-weight: 700; color: #e0e0f0; margin-bottom: 0.4rem; }
+    .step-content p  { font-size: 0.88rem; color: #7070a0; }
+
+    .tech-grid { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2.5rem; }
+    .tech-pill {
+      background: #13131f; border: 1px solid #ffffff12;
+      border-radius: 999px; padding: 0.45rem 1.1rem;
+      font-size: 0.85rem; color: #a0a0c0;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .tech-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem; margin-top: 3rem;
+    }
+    .stat-card {
+      background: #13131f; border: 1px solid #ffffff10;
+      border-radius: 12px; padding: 1.5rem; text-align: center;
+    }
+    .stat-num { font-size: 2rem; font-weight: 800; color: #a78bfa; }
+    .stat-label { font-size: 0.82rem; color: #6060a0; margin-top: 0.3rem; }
+
+    footer {
+      text-align: center; padding: 2.5rem 6%;
+      border-top: 1px solid #ffffff10;
+      color: #50507a; font-size: 0.85rem;
+    }
+    footer span { color: #a78bfa; }
+    .divider { border: none; border-top: 1px solid #ffffff08; margin: 0; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">&#9679; SmartStudy Monitor</div>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#tools">Try it</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#tech">Tech stack</a></li>
+    </ul>
+  </nav>
+
+  <div class="hero">
+    <div class="badge">&#127891; University Project &mdash; Manipal University Jaipur</div>
+    <h1>Study smarter,<br/>not just longer.</h1>
+    <p class="hero-sub">
+      An AI-powered study monitor that tracks your focus in real time, predicts confusing topics from your notes, and stores session analytics to help you improve over time.
+    </p>
+    <div class="btn-group">
+      <a href="#tools" class="btn btn-primary">Try it live</a>
+      <a href="#how" class="btn btn-outline">See how it works</a>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <section id="features">
+    <div class="section-label">What it does</div>
+    <h2 class="section-title">Four features, one smart system</h2>
+    <p class="section-sub">Instead of solving one problem, SmartStudy Monitor brings together attention, comprehension, and analytics in a single lightweight app.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon icon-purple">&#128336;</div>
+        <h3>Session Tracking</h3>
+        <p>Automatically records when you start and stop studying. No manual input needed — just open and go.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-cyan">&#128065;</div>
+        <h3>Focus Detection</h3>
+        <p>Uses your webcam and OpenCV to detect face presence. If you leave or look away, it logs a distraction event instantly.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-amber">&#129504;</div>
+        <h3>Confusion Predictor</h3>
+        <p>Paste your notes and the ML model tells you if the topic is easy or potentially confusing — so you know where to focus.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-green">&#128202;</div>
+        <h3>Session Analytics</h3>
+        <p>All session data is saved locally. View total sessions, average duration, and track improvement over time.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section id="tools">
+    <div class="section-label">Try it live</div>
+    <h2 class="section-title">Interactive demo</h2>
+    <p class="section-sub">These tools work right in your browser — no installation needed.</p>
+
+    <div class="tools-grid">
+
+      <!-- TIMER -->
+      <div class="tool-card">
+        <h3>&#9201; Study Timer</h3>
+        <p>Start a session and track exactly how long you study.</p>
+        <div class="timer-display" id="timerDisplay">00:00:00</div>
+        <div class="timer-status" id="timerStatus">No session running</div>
+        <div class="timer-btns">
+          <button class="tbtn tbtn-start" onclick="startTimer()">&#9654; Start</button>
+          <button class="tbtn tbtn-end"   onclick="endTimer()">&#9632; End</button>
+        </div>
+        <div id="sessionBadge" style="display:none">
+          <span class="session-badge" id="sessionBadgeText"></span>
+        </div>
+      </div>
+
+      <!-- NOTE ANALYZER -->
+      <div class="tool-card">
+        <h3>&#129504; Note Analyzer</h3>
+        <p>Paste your notes and see if the topic needs more revision.</p>
+        <textarea class="note-input" id="noteInput" placeholder="e.g. deadlock in operating systems occurs when two processes wait for each other indefinitely..."></textarea>
+        <button class="analyze-btn" onclick="analyzeNotes()">&#128269; Analyze Notes</button>
+        <div class="result-box" id="resultBox"></div>
+      </div>
+
+      <!-- SESSION STATS -->
+      <div class="tool-card">
+        <h3>&#128202; Session Stats</h3>
+        <p>Your sessions are saved in the browser automatically.</p>
+        <div class="counter-display">
+          <span class="counter-num" id="sessionCount">0</span>
+          <div class="counter-label">total sessions completed</div>
+        </div>
+        <div class="stats-mini">
+          <div class="stat-mini-card">
+            <div class="stat-mini-num" id="totalTime">0m</div>
+            <div class="stat-mini-label">total time</div>
+          </div>
+          <div class="stat-mini-card">
+            <div class="stat-mini-num" id="avgTime">0m</div>
+            <div class="stat-mini-label">avg session</div>
+          </div>
+          <div class="stat-mini-card">
+            <div class="stat-mini-num" id="notesChecked">0</div>
+            <div class="stat-mini-label">notes checked</div>
+          </div>
+        </div>
+        <button class="reset-btn" onclick="resetStats()">Reset all stats</button>
+      </div>
+
+      <!-- FOCUS TIPS -->
+      <div class="tool-card">
+        <h3>&#128161; Focus Tips</h3>
+        <p>Get a random study tip whenever you need motivation.</p>
+        <div class="tip-box" id="tipBox">
+          <div class="tip-tag">Tip of the moment</div><br/>
+          Click the button below to get your first focus tip!
+        </div>
+        <button class="tip-btn" onclick="newTip()">&#8635; Get a new tip</button>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section id="how">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">Simple workflow, smart results</h2>
+    <p class="section-sub">The entire system runs in your terminal with a simple menu. No internet required.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>Start your study session</h3>
+          <p>The timer starts the moment you choose "Start Study". The app records your session duration in the background.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>Monitor your focus via webcam</h3>
+          <p>OpenCV captures a frame and checks for your face using a Haar Cascade classifier. Face present = focused. Face missing = distraction logged.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>Analyze your notes with ML</h3>
+          <p>Paste your study notes into the app. A Logistic Regression model converts the text into features and predicts whether the topic is easy or risky.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>Review your analytics</h3>
+          <p>End the session and your data is saved to a local CSV file. View total sessions and average study duration anytime.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section id="tech">
+    <div class="section-label">Tech stack</div>
+    <h2 class="section-title">Built with Python &amp; open-source tools</h2>
+    <p class="section-sub">Lightweight, beginner-friendly technologies that run on any standard laptop.</p>
+    <div class="tech-grid">
+      <div class="tech-pill"><div class="tech-dot" style="background:#4ade80"></div>Python 3</div>
+      <div class="tech-pill"><div class="tech-dot" style="background:#c084fc"></div>scikit-learn</div>
+      <div class="tech-pill"><div class="tech-dot" style="background:#67e8f9"></div>OpenCV</div>
+      <div class="tech-pill"><div class="tech-dot" style="background:#fbbf24"></div>Pandas</div>
+      <div class="tech-pill"><div class="tech-dot" style="background:#f87171"></div>Logistic Regression</div>
+      <div class="tech-pill"><div class="tech-dot" style="background:#a78bfa"></div>CountVectorizer (NLP)</div>
+      <div class="tech-pill"><div class="tech-dot" style="background:#34d399"></div>Haar Cascade Classifier</div>
+      <div class="tech-pill"><div class="tech-dot" style="background:#fb923c"></div>CSV Analytics</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">Python modules</div></div>
+      <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">AI techniques used</div></div>
+      <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">External APIs needed</div></div>
+      <div class="stat-card"><div class="stat-num">100%</div><div class="stat-label">Runs offline</div></div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <footer>
+    Built by <span>Siya Kapila</span> &mdash; Manipal University Jaipur &nbsp;|&nbsp;
+    Guide: Prof. (Dr.) Sandeep Chaurasia &nbsp;|&nbsp; 2025&ndash;2026
+  </footer>
+
+  <script>
+    function getStats() {
+      return JSON.parse(localStorage.getItem('ssm_stats') || '{"sessions":[],"notesChecked":0}');
+    }
+    function saveStats(s) {
+      localStorage.setItem('ssm_stats', JSON.stringify(s));
+    }
+    function updateStatsUI() {
+      const s = getStats();
+      const count = s.sessions.length;
+      const total = s.sessions.reduce((a, b) => a + b, 0);
+      const avg   = count > 0 ? Math.round(total / count) : 0;
+      document.getElementById('sessionCount').textContent  = count;
+      document.getElementById('totalTime').textContent     = Math.round(total / 60) + 'm';
+      document.getElementById('avgTime').textContent       = Math.round(avg  / 60) + 'm';
+      document.getElementById('notesChecked').textContent  = s.notesChecked || 0;
+    }
+    updateStatsUI();
+
+    let timerInterval = null;
+    let timerStart    = null;
+    let timerRunning  = false;
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function startTimer() {
+      if (timerRunning) return;
+      timerRunning = true;
+      timerStart   = Date.now();
+      document.getElementById('timerStatus').textContent  = '● Session running...';
+      document.getElementById('timerStatus').style.color  = '#4ade80';
+      document.getElementById('sessionBadge').style.display = 'none';
+      timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - timerStart) / 1000);
+        const h = Math.floor(elapsed / 3600);
+        const m = Math.floor((elapsed % 3600) / 60);
+        const sc = elapsed % 60;
+        document.getElementById('timerDisplay').textContent = pad(h) + ':' + pad(m) + ':' + pad(sc);
+      }, 1000);
+    }
+
+    function endTimer() {
+      if (!timerRunning) { alert('No session running. Press Start first!'); return; }
+      clearInterval(timerInterval);
+      timerRunning = false;
+      const duration = Math.floor((Date.now() - timerStart) / 1000);
+      document.getElementById('timerDisplay').textContent = '00:00:00';
+      document.getElementById('timerStatus').textContent  = 'No session running';
+      document.getElementById('timerStatus').style.color  = '#6060a0';
+      const mins = Math.floor(duration / 60);
+      const secs = duration % 60;
+      document.getElementById('sessionBadgeText').textContent = '✓ Session saved: ' + mins + 'm ' + secs + 's';
+      document.getElementById('sessionBadge').style.display = 'block';
+      const s = getStats();
+      s.sessions.push(duration);
+      saveStats(s);
+      updateStatsUI();
+    }
+
+    const easyWords = ['easy','simple','basic','clear','understand','introduction','definition','example','straightforward','obvious','familiar','known','review','recall','remember','summarize','describe','list','identify','explain'];
+    const riskWords = ['confusing','difficult','hard','complex','advanced','unclear','abstract','deadlock','algorithm','recursion','theorem','proof','derive','calculus','quantum','ambiguous','uncertain','complicated','tricky','tough','theory','analysis','critical','evaluate','synthesis','differentiate','integrate'];
+
+    function analyzeNotes() {
+      const text = document.getElementById('noteInput').value.toLowerCase().trim();
+      const box  = document.getElementById('resultBox');
+      if (!text) {
+        box.style.display = 'block';
+        box.className = 'result-box result-neutral';
+        box.textContent = '⚠️ Please enter some notes first.';
+        return;
+      }
+      let easyScore = 0, riskScore = 0;
+      easyWords.forEach(w => { if (text.includes(w)) easyScore++; });
+      riskWords.forEach(w => { if (text.includes(w)) riskScore++; });
+      box.style.display = 'block';
+      if (riskScore > easyScore) {
+        box.className = 'result-box result-risk';
+        box.innerHTML = '⚠️ <strong>Risk</strong> — This topic may need more revision! Try re-reading it or making cleaner notes.';
+      } else if (easyScore > 0) {
+        box.className = 'result-box result-easy';
+        box.innerHTML = '✅ <strong>Easy</strong> — This topic looks well understood. Great job!';
+      } else {
+        box.className = 'result-box result-neutral';
+        box.innerHTML = '🔍 <strong>Neutral</strong> — Not enough signal. Try adding more detail to your notes.';
+      }
+      const s = getStats();
+      s.notesChecked = (s.notesChecked || 0) + 1;
+      saveStats(s);
+      updateStatsUI();
+    }
+
+    function resetStats() {
+      if (confirm('Reset all your session stats? This cannot be undone.')) {
+        localStorage.removeItem('ssm_stats');
+        updateStatsUI();
+      }
+    }
+
+    const tips = [
+      "Use the Pomodoro technique: study for 25 minutes, then take a 5-minute break. It keeps your brain fresh.",
+      "Before starting, write down the ONE thing you need to understand by the end of this session.",
+      "Silence your phone and put it face-down. Even seeing it reduces focus by up to 20%.",
+      "If a topic feels confusing, try explaining it out loud as if teaching someone else.",
+      "Drink water before studying. Even mild dehydration reduces concentration significantly.",
+      "Study your hardest subject first, when your brain is at peak energy.",
+      "After finishing a topic, close your notes and write down everything you remember. It boosts retention.",
+      "Good lighting matters — dim light makes your brain think it is time to sleep.",
+      "Break big topics into smaller sub-topics. Studying 'algorithms' is too broad — try 'bubble sort' instead.",
+      "Review your notes within 24 hours of learning. Forgetting slows down dramatically after that.",
+      "Avoid multitasking. Switching between tasks reduces productivity by up to 40%.",
+      "Set a specific goal before each session: 'I will finish chapter 3 exercises' beats 'I will study math'.",
+    ];
+    let lastTip = -1;
+    function newTip() {
+      let idx;
+      do { idx = Math.floor(Math.random() * tips.length); } while (idx === lastTip);
+      lastTip = idx;
+      document.getElementById('tipBox').innerHTML = '<div class="tip-tag">Tip of the moment</div><br/>' + tips[idx];
+    }
+    newTip();
+  </script>
+
+</body>
+</html>
